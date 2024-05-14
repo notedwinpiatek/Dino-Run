@@ -21,7 +21,7 @@ Dino Run is a side-scrolling game where the player controls a dinosaur character
 1. Clone the repository to your local machine:
 
 ```cmd
-git clone
+git clone https://github.com/notedwinpiatek/dino-run.git
 ```
 
 2. Navigate to the project directory:
