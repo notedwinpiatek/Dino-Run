@@ -54,6 +54,10 @@ python main.py
 - Press **S** to duck under obstacles.
 - Avoid colliding with obstacles to stay alive and earn points.
 
+## UML Diagram
+
+![Diagram Screenshot](diagram.png)
+
 ## Acknowledgements
 
 - This game was created using the [Pygame](https://www.pygame.org/) library.
