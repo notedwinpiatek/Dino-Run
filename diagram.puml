@@ -1,65 +1,61 @@
 @startuml
 
+class Dino {
+    - dino_walk
+    - dino_index
+    - dino_surface
+    - dino_jump
+    - dino_duck
+    - dino_duck_index
+    - jump_sound
+    - gravity
+    - ducking
+    + dino_input()
+    + apply_gravity()
+    + animation_state()
+    + update()
+}
+
 class Obstacle {
-    +type
-    +y
-    +moving
-    +update()
-    +destroy()
+    - type
+    - y
+    - moving
+    + update()
+    + destroy()
 }
 
 class MovingObstacle {
-    +type
-    +y
-    +moving
-    +animation_state()
-    +update()
+    - animation_index
+    - frames
+    + animation_state()
+    + update()
 }
 
 class Bird {
-    +__str__()
+    - bird_count
+    + description()
+    + __str__()
 }
 
 class Cactus1 {
-}
-
-class Cactus2 {
-}
-
-class Cactus3 {
-}
-
-class Cactus4 {
-}
-
-class Cactus5 {
-}
-
-class Cactus6 {
+    - __private_attribute
+    - _protected_attribute
 }
 
 class Cloud {
-    +cloud_movement()
-    +destroy()
-    +update()
+    + cloud_movement()
+    + destroy()
+    + update()
 }
 
-class Dino {
-    +dino_input()
-    +apply_gravity()
-    +animation_state()
-    +update()
-}
-
-Obstacle <|-- MovingObstacle
-MovingObstacle <|-- Bird
+Dino --> Obstacle
+Dino --> MovingObstacle
+Obstacle <|-- Bird
 Obstacle <|-- Cactus1
 Obstacle <|-- Cactus2
 Obstacle <|-- Cactus3
 Obstacle <|-- Cactus4
 Obstacle <|-- Cactus5
 Obstacle <|-- Cactus6
-Obstacle <|-- Cloud
-Obstacle <|-- Dino
 
 @enduml
