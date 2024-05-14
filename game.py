@@ -19,6 +19,15 @@ game_speed = 1
 start_time = 0
 score = 0
 
+# SFX
+score_sound = pygame.mixer.Sound('assets/audio/100points.mp3')
+lose_sound = pygame.mixer.Sound('assets/audio/lose.mp3')
+if score == 100:
+    score_sound.play()
+# bg_music = pygame.mixer.Sound('')
+# bg_music.set_volume(0.2)
+# chanel= bg_music.play(loops = -1)
+
 # Text
 game_over = text_font.render("Game Over", False, '#272727')
 game_over_rectangle = game_over.get_rect(center = (400,180))
@@ -63,12 +72,16 @@ class Dino(pygame.sprite.Sprite):
         self.gravity = 0
         
         self.ducking = False
-        
 
+        # jump sound
+        self.jump_sound = pygame.mixer.Sound("assets/audio/jump.mp3")
+        self.jump_sound.set_volume(0.5)   
+        
     def dino_input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE] and self.rect.bottom >= 356:
             self.gravity = -17
+            self.jump_sound.play()
         if keys[pygame.K_s]:
             self.rect.y += 20
             self.ducking = True
@@ -103,8 +116,7 @@ class Dino(pygame.sprite.Sprite):
         self.dino_input()
         self.apply_gravity()
         self.animation_state()
-        
-        
+            
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, type, y, moving):
         super().__init__()
@@ -206,6 +218,7 @@ def collisions(dino, obstacles):
 def collision_sprite():
     if pygame.sprite.spritecollide(dino.sprite, obstacle_group, False):
         obstacle_group.empty()
+        lose_sound.play()
         return False
     else:
         return True
@@ -231,6 +244,8 @@ dino.add(Dino())
 obstacle_group = pygame.sprite.Group()
 
 clouds = pygame.sprite.Group()
+
+
 
 # Main Loop
 while True:
@@ -272,6 +287,7 @@ while True:
         
         # Text
         score = display_time()
+        
         
         # cloud
         clouds.draw(screen)
