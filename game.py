@@ -5,6 +5,8 @@ from random import randint, choice
 # initialization
 pygame.init()
 pygame.display.set_caption('Dino Run')
+icon = pygame.image.load('assets/graphics/favicon.png')
+pygame.display.set_icon(icon)
 
 # variables
 screen = pygame.display.set_mode((800, 400))
@@ -103,13 +105,25 @@ class Dino(pygame.sprite.Sprite):
         
         
 class Obstacle(pygame.sprite.Sprite):
-    def __init__(self, type, y):
+    def __init__(self, type, y, moving):
         super().__init__()
         y_pos = y
-
-        self.image = pygame.image.load(f'assets/graphics/cactus/{type}.png').convert_alpha()
+        if moving:
+            self.animation_index = 0
+            frame_1 = pygame.image.load(f'assets/graphics/{type}/{type}1.png').convert_alpha()
+            frame_2 = pygame.image.load(f'assets/graphics/{type}/{type}2.png').convert_alpha()
+            self.frames = [frame_1, frame_2]
+            self.image = self.frames[self.animation_index]
+        else:
+            type_dr = type
+            try:
+                int(type[-1])
+                type_dr = type[:-1]
+            except ValueError:
+                pass
+            self.image = pygame.image.load(f'assets/graphics/{type_dr}/{type}.png').convert_alpha()
         self.rect = self.image.get_rect(midbottom=(randint(900, 1100), y_pos))
- 
+    
     def update(self):
         self.rect.x -= 6
         self.destroy()
@@ -118,16 +132,9 @@ class Obstacle(pygame.sprite.Sprite):
         if self.rect.x <= -100:
             self.kill()
             
-class MovingObstacle(Obstacle):
-    def __init__(self, type, y):
-        super().__init__(type, y)
-    
-        frame_1 = pygame.image.load(f'assets/graphics/{type}/{type}1.png').convert_alpha()
-        frame_2 = pygame.image.load(f'assets/graphics/{type}/{type}2.png').convert_alpha()
-        self.frames = [frame_1, frame_2]
-
-        self.animation_index = 0
-        self.image = self.frames[self.animation_index]
+class MovingObstacle(Obstacle, pygame.sprite.Sprite):
+    def __init__(self, type, y, moving):
+        super().__init__(type, y, moving)
         
     def animation_state(self):
         self.animation_index += 0.1
@@ -142,31 +149,31 @@ class MovingObstacle(Obstacle):
 
 class Bird(MovingObstacle):
     def __init__(self):
-        super().__init__('bird', 300)
+        super().__init__('bird', 300, True)
 
 class Cactus1(Obstacle):
     def __init__(self):
-        super().__init__('cactus1', 360)
+        super().__init__('cactus1', 360, False)
 
 class Cactus2(Obstacle):
     def __init__(self):
-        super().__init__('cactus2', 360)
+        super().__init__('cactus2', 360, False)
 
 class Cactus3(Obstacle):
     def __init__(self):
-        super().__init__('cactus3', 360)
+        super().__init__('cactus3', 360, False)
 
 class Cactus4(Obstacle):
     def __init__(self):
-        super().__init__('cactus4', 360)
+        super().__init__('cactus4', 360, False)
 
 class Cactus5(Obstacle):
     def __init__(self):
-        super().__init__('cactus5', 360)
+        super().__init__('cactus5', 360, False)
 
 class Cactus6(Obstacle):
     def __init__(self):
-        super().__init__('cactus6', 360)
+        super().__init__('cactus6', 360, False)
 
         
         
@@ -201,6 +208,7 @@ dino = pygame.sprite.GroupSingle()
 dino.add(Dino())
 obstacle_group = pygame.sprite.Group()
 
+# Main Loop
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -216,9 +224,13 @@ while True:
             if event.key == pygame.K_RETURN:
                 game_active = True
                 start_time = int(pygame.time.get_ticks()/1000)
+                dino.sprite.rect.y = 360
+                
         
-        if event.type == obstacle_timer:
-                obstacle_group.add(Bird())
+        if event.type == obstacle_timer and game_active:
+                obstacle_group.add(choice([Bird(), Cactus1(), Cactus2(), Cactus3(), Cactus4(), Cactus5(), Cactus6()]))
+
+        
         
     if game_active:
         game_speed += 0.0025
@@ -247,12 +259,14 @@ while True:
     else:
         if score != 0:
             screen.fill('White')
+            game_speed = 1
             score_message = score_font.render(f"Your score is: {score}",False, '#272727')
             score_message_rectangle = score_message.get_rect(center = (400,220))
             screen.blit(game_over,game_over_rectangle)
             screen.blit(restart,restart_rectangle)
             screen.blit(score_message, score_message_rectangle)
         else:
+            game_speed = 1
             screen.fill('White')
             screen.blit(welcome_message, welcome_message_rect)
             screen.blit(start_text, start_text_rect)
