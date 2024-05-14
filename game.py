@@ -153,12 +153,51 @@ class MovingObstacle(Obstacle, pygame.sprite.Sprite):
         self.destroy()
 
 class Bird(MovingObstacle):
+     # dummy code
+    bird_count = 0
     def __init__(self):
         super().__init__('bird', 300, True)
+        
+        # dummy code - count objects
+        Bird.bird_count += 1
+
+    # dummy code - class method
+    @classmethod
+    def description(cls):
+        return f"This is bird class with {Bird.bird_count} obstacles defined."
+
+    # dummy code - string representation
+    def __str__(self):
+        return f"Bird which is moving to the {self.direction}"
+
 
 class Cactus1(Obstacle):
     def __init__(self):
         super().__init__('cactus1', 360, False)
+        
+        # dummy code - private property
+        self.__private_attribute = 'pink'
+        # dummy code - protected property
+        self._protected_attribute = 23
+
+        # dummy code - set and get private property
+        @property 
+        def private_attribute(self):
+            return self.__private_attribute
+        @private_attribute.setter
+        def private_attribute(self, attribute):
+            self.__private_attribute = attribute    
+
+        # dummy code - set and get protected property
+        @property
+        def protected_attribute(self):
+            return self._protected_attribute
+        @protected_attribute.setter
+        def protected_attribute(self, attribute):
+            if not isinstance(attribute, int):
+                raise TypeError("Attribute must be an integer")
+            self._protected_attribute = attribute
+
 
 class Cactus2(Obstacle):
     def __init__(self):
