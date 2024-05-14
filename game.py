@@ -1,3 +1,4 @@
+from typing import Any
 import pygame
 from sys import exit
 from random import randint, choice
@@ -175,8 +176,25 @@ class Cactus6(Obstacle):
     def __init__(self):
         super().__init__('cactus6', 360, False)
 
+class Cloud(pygame.sprite.Sprite):
+    def __init__(self):
+        super().__init__()
+        cloud = pygame.image.load('assets/graphics/cloud.png').convert_alpha()
+        self.image = pygame.transform.scale2x(cloud)
+        self.rect = self.image.get_rect(bottomleft = (randint(900,2000),300))
         
-        
+    def cloud_movement(self):
+        self.rect.x -= game_speed
+    
+    def destroy(self):
+        if self.rect.x <= -100:
+            self.kill()
+            
+    
+    def update(self):
+        self.cloud_movement()
+        self.destroy()
+                
 def collisions(dino, obstacles):
     if obstacles:
         for obstacle_rect in obstacles:
@@ -203,10 +221,16 @@ def display_time():
 obstacle_timer = pygame.USEREVENT +1
 pygame.time.set_timer(obstacle_timer, 1500)
 
+cloud_timer = pygame.USEREVENT +2
+pygame.time.set_timer(cloud_timer, 1500)
+
 # Groups
 dino = pygame.sprite.GroupSingle()
 dino.add(Dino())
+
 obstacle_group = pygame.sprite.Group()
+
+clouds = pygame.sprite.Group()
 
 # Main Loop
 while True:
@@ -225,11 +249,14 @@ while True:
                 game_active = True
                 start_time = int(pygame.time.get_ticks()/1000)
                 dino.sprite.rect.y = 360
+                clouds.empty()
                 
         
         if event.type == obstacle_timer and game_active:
-                obstacle_group.add(choice([Bird(), Cactus1(), Cactus2(), Cactus3(), Cactus4(), Cactus5(), Cactus6()]))
+            obstacle_group.add(choice([Bird(), Cactus1(), Cactus2(), Cactus3(), Cactus4(), Cactus5(), Cactus6()]))
 
+        if event.type == cloud_timer and game_active:
+            clouds.add(Cloud())
         
         
     if game_active:
@@ -245,6 +272,10 @@ while True:
         
         # Text
         score = display_time()
+        
+        # cloud
+        clouds.draw(screen)
+        clouds.update()
         
         # dino
         dino.draw(screen)
