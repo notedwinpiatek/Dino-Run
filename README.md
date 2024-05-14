@@ -62,8 +62,7 @@ python main.py
 
 - This game was created using the [Pygame](https://www.pygame.org/) library.
 - Sound effects obtained from [Uppbeat](https://uppbeat.io/sfx).
-- Fonts used:
-- Press Start 2P Regular: [Google Fonts](https://fonts.google.com/specimen/Press+Start+2P)
+- Fonts used: Press Start 2P Regular: [Google Fonts](https://fonts.google.com/specimen/Press+Start+2P)
 
 ## Contributing
 
