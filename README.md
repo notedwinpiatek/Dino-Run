@@ -17,22 +17,29 @@ Dino Run is a side-scrolling game where the player controls a dinosaur character
 
 ## Installation
 
+
 1. Clone the repository to your local machine:
 
+```cmd
 git clone
+```
 
 2. Navigate to the project directory:
 
+```cmd
 cd dino-run
+```
 
 3. Install the required dependencies:
 
+```cmd
 pip install pygame
-
+```
 4. Run the game:
 
+```cmd
 python main.py
-
+```
 
 ## Controls
 
