@@ -1,0 +1,65 @@
+@startuml
+
+class Obstacle {
+    +type
+    +y
+    +moving
+    +update()
+    +destroy()
+}
+
+class MovingObstacle {
+    +type
+    +y
+    +moving
+    +animation_state()
+    +update()
+}
+
+class Bird {
+    +__str__()
+}
+
+class Cactus1 {
+}
+
+class Cactus2 {
+}
+
+class Cactus3 {
+}
+
+class Cactus4 {
+}
+
+class Cactus5 {
+}
+
+class Cactus6 {
+}
+
+class Cloud {
+    +cloud_movement()
+    +destroy()
+    +update()
+}
+
+class Dino {
+    +dino_input()
+    +apply_gravity()
+    +animation_state()
+    +update()
+}
+
+Obstacle <|-- MovingObstacle
+MovingObstacle <|-- Bird
+Obstacle <|-- Cactus1
+Obstacle <|-- Cactus2
+Obstacle <|-- Cactus3
+Obstacle <|-- Cactus4
+Obstacle <|-- Cactus5
+Obstacle <|-- Cactus6
+Obstacle <|-- Cloud
+Obstacle <|-- Dino
+
+@enduml
