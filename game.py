@@ -68,7 +68,7 @@ class Dino(pygame.sprite.Sprite):
     def dino_input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE] and self.rect.bottom >= 356:
-            self.gravity = -15
+            self.gravity = -17
         if keys[pygame.K_s]:
             self.rect.y += 20
             self.ducking = True
@@ -244,7 +244,7 @@ while True:
                 pygame.quit()
                 exit()
         # Starting the game
-        if event.type == pygame.KEYDOWN:
+        if event.type == pygame.KEYDOWN and not game_active:
             if event.key == pygame.K_RETURN:
                 game_active = True
                 start_time = int(pygame.time.get_ticks()/1000)
