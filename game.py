@@ -22,26 +22,22 @@ score = 0
 # SFX
 score_sound = pygame.mixer.Sound('assets/audio/100points.mp3')
 lose_sound = pygame.mixer.Sound('assets/audio/lose.mp3')
-if score == 100:
-    score_sound.play()
-# bg_music = pygame.mixer.Sound('')
-# bg_music.set_volume(0.2)
-# chanel= bg_music.play(loops = -1)
 
 # Text
 game_over = text_font.render("Game Over", False, '#272727')
-game_over_rectangle = game_over.get_rect(center = (400,180))
+game_over_rectangle = game_over.get_rect(center=(400, 180))
 restart = score_font.render("Press Enter to restart", False, '#272727')
-restart_rectangle = restart.get_rect(center = (400,350))
+restart_rectangle = restart.get_rect(center=(400, 350))
 welcome_message = score_font.render("Welcome to DINO RUN", False, '#272727')
-welcome_message_rect = welcome_message.get_rect(center = (400,180))
+welcome_message_rect = welcome_message.get_rect(center=(400, 180))
 start_text = score_font.render("Press Enter to start", False, '#272727')
-start_text_rect = start_text.get_rect(center = (400,220))
+start_text_rect = start_text.get_rect(center=(400, 220))
 
 # Ground
 ground_surface = pygame.transform.scale2x(pygame.image.load('assets/graphics/ground.png').convert_alpha())
 ground_x = 0
 
+# Dino class
 class Dino(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
@@ -65,18 +61,15 @@ class Dino(pygame.sprite.Sprite):
         self.dino_duck_index = 0
         self.dino_duck_surface = self.dino_duck[self.dino_duck_index]
 
-        
-        
         self.image = self.dino_walk[self.dino_index]
         self.rect = self.image.get_rect(midbottom=(80, 360))
         self.gravity = 0
-        
         self.ducking = False
 
         # jump sound
         self.jump_sound = pygame.mixer.Sound("assets/audio/jump.mp3")
-        self.jump_sound.set_volume(0.5)   
-        
+        self.jump_sound.set_volume(0.5)
+
     def dino_input(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_SPACE] and self.rect.bottom >= 356:
@@ -85,9 +78,9 @@ class Dino(pygame.sprite.Sprite):
         if keys[pygame.K_s]:
             self.rect.y += 20
             self.ducking = True
-        else: self.ducking = False
-            
-            
+        else:
+            self.ducking = False
+
     def apply_gravity(self):
         self.gravity += 1
         self.rect.y += self.gravity
@@ -95,8 +88,7 @@ class Dino(pygame.sprite.Sprite):
             self.rect.bottom = 360
         elif self.rect.bottom >= 380 and self.ducking:
             self.rect.bottom = 380
-        
-    
+
     def animation_state(self):
         if self.rect.bottom > 361:
             self.dino_duck_index += 0.1
@@ -104,8 +96,7 @@ class Dino(pygame.sprite.Sprite):
                 self.dino_duck_index = 0
             self.image = self.dino_duck[int(self.dino_duck_index)]
         elif self.rect.bottom < 360:
-            self.image = self.dino_jump       
-        
+            self.image = self.dino_jump
         else:
             self.dino_index += 0.1
             if self.dino_index >= len(self.dino_walk):
@@ -116,7 +107,8 @@ class Dino(pygame.sprite.Sprite):
         self.dino_input()
         self.apply_gravity()
         self.animation_state()
-            
+
+# Obstacle classes
 class Obstacle(pygame.sprite.Sprite):
     def __init__(self, type, y, moving):
         super().__init__()
@@ -136,25 +128,25 @@ class Obstacle(pygame.sprite.Sprite):
                 pass
             self.image = pygame.image.load(f'assets/graphics/{type_dr}/{type}.png').convert_alpha()
         self.rect = self.image.get_rect(midbottom=(randint(900, 1100), y_pos))
-    
+
     def update(self):
         self.rect.x -= 6
         self.destroy()
-        
+
     def destroy(self):
         if self.rect.x <= -100:
             self.kill()
-            
+
 class MovingObstacle(Obstacle, pygame.sprite.Sprite):
     def __init__(self, type, y, moving):
         super().__init__(type, y, moving)
-        
+
     def animation_state(self):
         self.animation_index += 0.1
         if self.animation_index >= len(self.frames):
             self.animation_index = 0
         self.image = self.frames[int(self.animation_index)]
-    
+
     def update(self):
         self.animation_state()
         self.rect.x -= 6
@@ -188,33 +180,26 @@ class Cactus6(Obstacle):
     def __init__(self):
         super().__init__('cactus6', 360, False)
 
+# Cloud class
 class Cloud(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         cloud = pygame.image.load('assets/graphics/cloud.png').convert_alpha()
         self.image = pygame.transform.scale2x(cloud)
-        self.rect = self.image.get_rect(bottomleft = (randint(900,2000),300))
-        
+        self.rect = self.image.get_rect(bottomleft=(randint(900, 2000), 300))
+
     def cloud_movement(self):
         self.rect.x -= game_speed
-    
+
     def destroy(self):
         if self.rect.x <= -100:
             self.kill()
-            
-    
+
     def update(self):
         self.cloud_movement()
         self.destroy()
-                
-def collisions(dino, obstacles):
-    if obstacles:
-        for obstacle_rect in obstacles:
-            if dino.colliderect(obstacle_rect):
-                obstacle_group.empty()
-                return False
-    return True
 
+# Function to check collisions
 def collision_sprite():
     if pygame.sprite.spritecollide(dino.sprite, obstacle_group, False):
         obstacle_group.empty()
@@ -222,19 +207,20 @@ def collision_sprite():
         return False
     else:
         return True
-    
+
+# Function to display time and score
 def display_time():
     current_time = int((pygame.time.get_ticks()/1000) - start_time)
-    score_surface = text_font.render(f'YOUR SCORE: {current_time}', False, '#272727' )
-    score_rectangle = score_surface.get_rect(midtop = (400,50))
+    score_surface = text_font.render(f'YOUR SCORE: {current_time}', False, '#272727')
+    score_rectangle = score_surface.get_rect(midtop=(400, 50))
     screen.blit(score_surface, score_rectangle)
     return current_time
 
 # Timers
-obstacle_timer = pygame.USEREVENT +1
+obstacle_timer = pygame.USEREVENT + 1
 pygame.time.set_timer(obstacle_timer, 1500)
 
-cloud_timer = pygame.USEREVENT +2
+cloud_timer = pygame.USEREVENT + 2
 pygame.time.set_timer(cloud_timer, 1500)
 
 # Groups
@@ -245,8 +231,6 @@ obstacle_group = pygame.sprite.Group()
 
 clouds = pygame.sprite.Group()
 
-
-
 # Main Loop
 while True:
     for event in pygame.event.get():
@@ -254,29 +238,27 @@ while True:
             pygame.quit()
             exit()
         if event.type == pygame.KEYDOWN:
-        # Turning off the game
+            # Turning off the game
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 exit()
-        # Starting the game
-        if event.type == pygame.KEYDOWN and not game_active:
-            if event.key == pygame.K_RETURN:
+            # Starting the game
+            if event.key == pygame.K_RETURN and not game_active:
                 game_active = True
                 start_time = int(pygame.time.get_ticks()/1000)
                 dino.sprite.rect.y = 360
                 clouds.empty()
-                
-        
+
+        # Generating obstacles and clouds
         if event.type == obstacle_timer and game_active:
             obstacle_group.add(choice([Bird(), Cactus1(), Cactus2(), Cactus3(), Cactus4(), Cactus5(), Cactus6()]))
 
         if event.type == cloud_timer and game_active:
             clouds.add(Cloud())
-        
-        
+
     if game_active:
         game_speed += 0.0025
-        
+
         # background
         screen.fill('White')
         ground_x -= game_speed
@@ -284,39 +266,40 @@ while True:
         screen.blit(ground_surface, (ground_x + 1280, 330))
         if ground_x <= -1280:
             ground_x = 0
-        
+
         # Text
         score = display_time()
-        
-        
-        # cloud
+
+        # Clouds
         clouds.draw(screen)
         clouds.update()
-        
-        # dino
+
+        # Dino
         dino.draw(screen)
         dino.update()
-        
-        # obstacles
+
+        # Obstacles
         obstacle_group.draw(screen)
         obstacle_group.update()
-        
+
         # Collision
         game_active = collision_sprite()
     else:
         if score != 0:
+            # Game over screen
             screen.fill('White')
             game_speed = 1
-            score_message = score_font.render(f"Your score is: {score}",False, '#272727')
-            score_message_rectangle = score_message.get_rect(center = (400,220))
-            screen.blit(game_over,game_over_rectangle)
-            screen.blit(restart,restart_rectangle)
+            score_message = score_font.render(f"Your score is: {score}", False, '#272727')
+            score_message_rectangle = score_message.get_rect(center=(400, 220))
+            screen.blit(game_over, game_over_rectangle)
+            screen.blit(restart, restart_rectangle)
             screen.blit(score_message, score_message_rectangle)
         else:
+            # Welcome screen
             game_speed = 1
             screen.fill('White')
             screen.blit(welcome_message, welcome_message_rect)
             screen.blit(start_text, start_text_rect)
-            
+
     pygame.display.update()
     clock.tick(60)
